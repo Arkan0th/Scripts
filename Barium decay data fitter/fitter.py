@@ -50,7 +50,7 @@ def vyhladit_data(slozka, smooth_iteration):
             continue
         
         a, b, c = popt
-        b = 0.0047
+        #b = 0.0047
         error_b = np.sqrt(b)
         halflife = np.log(2) / b
         error_halflife = halflife / (a**2)
