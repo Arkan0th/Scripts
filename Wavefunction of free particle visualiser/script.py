@@ -47,18 +47,18 @@ def generate_wave_animation_soft(dt, save_dir="frames"):
     os.makedirs(save_dir, exist_ok=True)
     for i in range(dt + 1):  # Ensure we include t=25
         t = round((i / dt) * 25, 2)  # Scale t from 0 to 25 and round to 2 decimal places
-        save_path = os.path.join(save_dir, f"wave_t{t:.2f}.png")
+        save_path = os.path.join(save_dir, f"wave_t{t:.2f}.jpg")
         plot_wave_function(t, save_path=save_path)
         
         print_progress_bar(i + 1, dt + 1, prefix="Generating soft wave functions")
 
 
-def generate_wave_animation(max_t=1000, step=1, save_dir="frames"):
+def generate_wave_animation(max_t=500, step=1, save_dir="frames"):
     os.makedirs(save_dir, exist_ok=True)
     total_steps = (max_t - 26) // step + 1  # Calculate total iterations for the progress bar
     
     for i, t in enumerate(range(26, max_t + 1, step), start=1):
-        save_path = os.path.join(save_dir, f"wave_t{t}.png")
+        save_path = os.path.join(save_dir, f"wave_t{t}.jpg")
         plot_wave_function(t, save_path=save_path)
         
         print_progress_bar(i, total_steps, prefix="Generating full wave functions")
@@ -67,5 +67,5 @@ def generate_wave_animation(max_t=1000, step=1, save_dir="frames"):
 # User input for max time values
 dt = int(input("Enter dt (for soft frames from t=0 to t=25): "))
 generate_wave_animation_soft(dt)
-print("Generating wavefunctions from t=25 to t=1000")
+print("Generating wavefunctions from t=25 to t=500")
 generate_wave_animation()
