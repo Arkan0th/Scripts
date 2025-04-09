@@ -3,74 +3,48 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
-def exponential_func(x, a, b, c):
+def exp_fit(x, a, b, c):
     return a * np.exp(-b * x) + c
 
-def aplikovat_vyhlazeni(data, smooth_iteration):
-    for _ in range(smooth_iteration):
-        vyhlazena_data = []
-        i = 0
-        while i < len(data):
-            if i == len(data) - 1:
-                vyhlazena_data.append(int(data[i]))
-            else:
-                vyhlazena_data.append(int((data[i] + data[i + 1]) / 2))
-            i += 2
-        data = vyhlazena_data
-    return data
+def analyze_data(directory):
+    for file_name in ['barium_pure', 'barium_cesium']:
+        path = os.path.join(directory, file_name)
 
-def vyhladit_data(slozka, smooth_iteration):
-    for nazev_souboru in ['barium_pure', 'barium_cesium']:
-        cesta_souboru = os.path.join(slozka, f"{nazev_souboru}")
-        
-        if not os.path.exists(cesta_souboru):
-            print(f"Soubor {nazev_souboru} neexistuje v adresáři {slozka}.")
+        if not os.path.exists(path):
+            print(f"ERROR: File {file_name} not found in {directory}.")
             continue
-        
-        with open(cesta_souboru, 'r') as soubor:
-            radky = soubor.readlines()
-        
-        data = []
-        for radek in radky:
-            try:
-                value = float(radek.strip().replace(',', '.'))
-                data.append(value)
-            except ValueError:
-                continue
-        
-        smoothed_data = aplikovat_vyhlazeni(data, smooth_iteration)
-        
-        x_data = np.arange(len(smoothed_data))
-        y_data = np.array(smoothed_data)
+
+        with open(path, 'r') as file:
+            data = []
+            for line in file:
+                try:
+                    data.append(int(line))
+                except ValueError:
+                    continue
+
+        x_data = np.arange(len(data))
+        y_data = np.array(data)
 
         try:
-            popt, pcov = curve_fit(exponential_func, x_data, y_data, p0=(max(y_data), 0.01, min(y_data)))
-        except (RuntimeError, OverflowError, ValueError) as e:
-            print(f"Could not fit exponential function for {nazev_souboru}: {e}")
+            (a, b, c), _ = curve_fit(exp_fit, x_data, y_data, p0=(max(y_data), 0.01, min(y_data)))
+            halflife = np.log(2) / b
+            error_halflife = np.sqrt(halflife)
+        except Exception as e:
+            print(f"ERROR: could not fit exponential function for {file_name}: {e}")
             continue
-        
-        a, b, c = popt
-        #b = 0.0047
-        error_b = np.sqrt(b)
-        halflife = np.log(2) / b
-        error_halflife = halflife / (a**2)
-        
-        
-        print(f"lambda = {b:.4f}")
-        print(f"{nazev_souboru} half-life: {halflife:.3f} ± {error_halflife:.3f} s")
-        
+
+        print(f"{file_name} half-life: {halflife:.3f} ± {error_halflife:.3f} s")
+
         plt.figure()
-        plt.plot(x_data, y_data, marker='o', linestyle='-', label=f"Smoothed data")
-        plt.plot(x_data, exponential_func(x_data, *popt), linestyle='--', label="Exponential Fit")
+        plt.plot(x_data, y_data, '.', label="Data")
+        plt.plot(x_data, exp_fit(x_data, a, b, c), '--', label="Exponential Fit")
         plt.xlabel("Time [s]")
         plt.ylabel("Count")
-        plt.title(f"Exponential fit for {nazev_souboru}")
+        plt.title(f"Exponential fit for {file_name}")
         plt.legend()
         plt.grid()
         plt.show()
 
 if __name__ == "__main__":
-    slozka = "data"
-    smooth_iteration = 0
-    vyhladit_data(slozka, smooth_iteration)
+    analyze_data("data")
 
