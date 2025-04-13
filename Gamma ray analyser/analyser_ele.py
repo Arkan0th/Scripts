@@ -26,39 +26,78 @@ for i, file_name in enumerate(files):
     if data is None:
         continue
     
-    # Předpokládáme, že data jsou ve dvou sloupcích: x a y
-    x_values = np.arange(len(data)) * 4.96  # Úprava x-ové osy
-    
-    # Vytvoří nový canvas (graf)
-    plt.figure(i)
-    plt.plot(x_values, data, label='Data')
-    plt.title(f'Graph of {file_name}')
-    plt.xlabel('Energy [keV]')
-    plt.ylabel('Count')
-    
-        # Přidání asymptotické čáry pro odpovídající prvky
-    if "Cesium" in file_name:
-        plt.axvline(x=670, color='r', linestyle='--', label='Cesium energy peak (670 keV)')
-        print("Cesium found energy peak: 670 keV")
-        plt.axvline(x=191, color='r', linestyle=':', label='Cesium backscatter peak (191 keV)')
-        print("Sodium found backscatter: 191 keV")
-        plt.axvline(x=453, color='r', linestyle=':', label='Cesium Compton edge (453 keV)')
-        print("Sodium found Compton edge: 453 keV")
-    elif "Sodium" in file_name:
-        plt.axvline(x=511, color='r', linestyle='--', label='Sodium annihilation energy peak (511 keV)')
-        print("Sodium found e- e+ annihilation energy peak: 511 keV")
-        plt.axvline(x=1355, color='r', linestyle='--', label='Sodium photopeak (1355 keV)')
-        print("Sodium found energy photopeak: 1355 keV")
-        plt.axvline(x=174, color='r', linestyle=':', label='Sodium Compton edge (174 keV)')
-        print("Sodium found Compton edge: 174 keV")
-    elif "Europium" in file_name:
-        plt.axvline(x=119, color='r', linestyle='--', label='Europium energy peak (119 keV)')
-        print("Europium found energy peak: 119 keV")
-        plt.axvline(x=342, color='r', linestyle='--', label='Europium energy peak (342 keV)')
-        print("Europium found energy peak: 342 keV")
+    if "Na-22" in file_name:
+        x_values = 4.481 * np.arange(len(data)) + 49.463
+        plt.figure(i)
+        plt.plot(x_values, data, label='Data')
+        plt.title(f'Graph of {file_name}')
+        plt.xlabel('Energy [keV]')
+        plt.ylabel('Count')
 
-    plt.legend()
-    plt.grid(True)
+        print("\n### Sodium-22 ###")
+        plt.axvline(x=79, color='r', linestyle='--', label='X-ray from lead shielding interaction? (79 keV)')
+        print("X-ray from lead shielding interaction?: 79 keV")
+        plt.axvline(x=340, color='r', linestyle='--', label='e- e+ annihilation Compton edge (340 keV)')
+        print("e- e+ annihilation Compton edge: 340 keV")
+        plt.axvline(x=511, color='r', linestyle='--', label='e- e+ annihilation energy peak (511 keV)')
+        print("e- e+ Annihilation energy peak: 511 keV")
+        plt.axvline(x=1062, color='r', linestyle='--', label='Photopeak Compton edge (1062 keV)')
+        print("Photopeak Compton edge: 1062 keV")
+        plt.axvline(x=1275, color='r', linestyle='--', label='Photopeak (1275 keV)')
+        print("Photopeak: 1275 keV")
+        print("(Non distinct energy doublepeaks at ~206 keV and ~640 keV appear to be some kind of energy sum or effect of contamination, possibly backscatter in first case)")
+        
+        plt.legend()
+        plt.yscale('log')
+        plt.grid(True)
+        plt.savefig('Na-22.png', dpi=300)
+
+    elif "Cs-137" in file_name:
+        x_values = 4.961 * np.arange(len(data))
+        plt.figure(i)
+        plt.plot(x_values, data, label='Data')
+        plt.title(f'Graph of {file_name}')
+        plt.xlabel('Energy [keV]')
+        plt.ylabel('Count')
+
+        print("\n### Cesium-137 ###")
+        plt.axvline(x=30, color='r', linestyle='--', label='X-ray decay group (30 keV)')
+        print("X-ray decay group: 30 keV")
+        plt.axvline(x=191, color='r', linestyle='--', label='Backscatter peak (191 keV)')
+        print("Backscatter peak: 191 keV")
+        plt.axvline(x=467, color='r', linestyle='--', label='Compton edge (467 keV)')
+        print("Compton edge: 467 keV")
+        plt.axvline(x=670, color='r', linestyle='--', label='Energy peak (670 keV)')
+        print("Energy peak: 670 keV")
+
+        plt.legend()
+        plt.yscale('log')
+        plt.grid(True)
+        plt.savefig('Cs-137.png', dpi=300)
+
+    elif "Eu-152" in file_name:
+        x_values = 4.961 * np.arange(len(data))
+        plt.figure(i)
+        plt.plot(x_values, data, label='Data')
+        plt.title(f'Graph of {file_name}')
+        plt.xlabel('Energy [keV]')
+        plt.ylabel('Count')
+
+        print("\n### Europium-152 ###")
+        plt.axvline(x=35, color='r', linestyle='--', label='X-ray decay group (35 keV)')
+        print("X-ray decay group: 35 keV")
+        plt.axvline(x=119, color='r', linestyle='--', label='Energy peak (119 keV)')
+        print("Energy peak: 119 keV")
+        plt.axvline(x=243, color='r', linestyle='--', label='Energy peak (243 keV)')
+        print("Energy peak: 243 keV")
+        plt.axvline(x=342, color='r', linestyle='--', label='Energy peak (342 keV)')
+        print("Energy peak: 342 keV")
+        print("Other higher energy peaks are visible, however not as distinct")
+        
+        plt.legend()
+        plt.yscale('log')
+        plt.grid(True)
+        plt.savefig('Eu-152.png', dpi=300)
 
 plt.show()
 
