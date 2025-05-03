@@ -24,11 +24,12 @@ for lam in lambdas:
     plt.plot(E, T, label=f'$\\sqrt{{2mU_0}}a/\\hbar = {lam}$')
 
 plt.axvline(x=1, color='gray', linestyle='--', label='$E = U_0$')
-plt.xlabel('Energie $E/U_0$')
-plt.ylabel('Koeficient přechodu $T$')
-plt.title('Pravděpodobnost průchodu vlny přes potenciálovou jámu')
+plt.xlabel('Energy $E/U_0$')
+plt.ylabel('Transmission ceofficient $T$')
+plt.title('Probability of the wave transmitting through the potential barrier')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
+plt.savefig("Transmission ceofficient.png", dpi=300)
 plt.show()
 
